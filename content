@@ -1,0 +1,29 @@
+use  {easyx.)
+namespace{
+      void i
+      void score
+      void move
+}
+i=num 0
+score=num 0
+int main{
+draw an  rountine
+  for{monster die
+      score++
+  }
+while{player move
+left++
+right++
+up++
+down++
+}
+   if{player die 
+      i++
+      i>=1
+      back start
+      print（"you dead"）
+}
+restart game
+relay=0.5
+return 0;
+}
