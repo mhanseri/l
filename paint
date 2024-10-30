@@ -1,0 +1,49 @@
+include<windows.h>
+HWND hwnd
+LRESUIT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,LPARAM lparam){
+  switch(message){
+   case  WM_CLOSE:
+   DestoryWindow(hwnd);
+   break;
+   ase WM_DESTORY:
+     PostQuitMessage(0);
+     break;
+     default:
+     return DefWinodwProc(hwnd, message, wParam, lparam);
+  }
+  return 0;
+}
+int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE hPrevInstance, LPSTR lpCmdline, int nCmdShow){
+   WNDCLASS wc ={0};
+   wc.lpfnWndProc = WindowProcedure;
+   wc.hInstance = hInstance;
+   wc.lpszClassName = L"myWindowClass";
+
+   RegisterClass(&WC);
+   hwnd = CreateWindow(
+      L"myWindowClass",
+      L"我的弹窗页面“，
+      WS_OVERLAPPEDWINDOW,
+      CW_USEDEFAULT,
+      CW_USEDEFAULT,
+      500,
+      300,
+      NULL,
+      NULL,
+      hInstance,
+      NULL
+);
+
+if (hwnd == NULL){
+      return 0;
+}
+ShowWindow(hwnd,nCmdShow);
+
+MSG msg = {0};
+while（GetMessage(&msg, NULL, 0, 0)){
+   TranslateMessage(&msg);
+   DispatchMessae(&msg);
+}
+
+return msg.wParam
+}
