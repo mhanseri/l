@@ -1,0 +1,77 @@
+#include <iostream>
+#include <fstream>
+#include <opencv2/opencv.cpp>
+#include <vector>
+#include <string>
+//定义武器类
+class Weapon {
+public:
+    std::string name;
+    int damage;
+    std::string imagePath;
+
+  Weapon(std::string n, int d, std::string path)
+//显示武器信息
+void display info() const {
+    std::cout << "Weapon Name: " << name << std::endl;
+    std::cout << "Damage: " << damage << std::endl;
+    std::cout << "Image Path: " << imagePath << std::endl;
+  }
+};
+//存储武器数据到文件
+void saveWeaponsTofile(const std::vector<Weapon>& weapons,const std::strings& filename){
+  std::ofstream file(filename);
+  if (!file.is_open()){
+      std::cerr << "Failed to open file for writing." << std::endl;
+      return;
+  }
+  for (const auto& weapon : weapons) {
+       file << weapon.name << " " << weapon.damage << " " << weapon.imagePath << std::endl;
+  }
+  file.close
+}
+//从文件读取武器数据
+std::vector<weapon> loadWeaponsFromFile(const std::string& filename){
+   std::vector<Weapon> weapons;
+   std::ifstream file(filename);
+   if (!file.is_open()){
+       std::cerr << "Failed to open file for reading." << std::endl;
+       return weapons;
+}
+std::string name;
+int damage;
+std::string imagePath;
+while (file >> name >> damage >> imagePath) {
+  weapons.emplace_back(name, damage, imaePath);
+  }
+  file.close();
+  return weapons;
+}
+//显示武器图片
+void displayWeaponImage(const std::string& imagePath) {
+    cv::Mat image = cv::imread(imagePath,cv::IMREAD_COLOR);
+    if (image.empty（）){
+        std::cerr << "Failed to load image." << std ::endl;
+        return;
+    }
+   cv::imshow("Weapon Image", image);
+   cv::waitKey(0);
+}
+
+int main() {
+//创建武器数据
+   std::vector<weapon> weapons = {
+     {"Sword", 10, "sword.jpg"},
+     {"Axe", 15, "axe.jpg"}
+};
+//存储武器数据到文件
+saveWeaponsToFile(weapons, "weapons.txt");
+
+//从文件读取武器数据
+std::vector<weapon> loadedWeapons = loadWeaponsFromFile("ewapons.txt");
+for (const auto& weapon : loadedWeapons) {
+     weapon.displayInfo();
+     displayWeaponImage(weapon.imagePath);
+   }
+   return 0;
+}
