@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+
+class Item {
+public:
+   std::string name;
+   int quantity;
+
+   Item(std::string n, int q) : name(n), quantity(q) {}
+};
+
+class Inventory {
+private:
+    std::vector<Item> items;
+    std::map<std::string, int>itemMap;
+
+public:
+    void addItem(const std::string& itemName, int quantity) {
+       for （auto& item : items） {
+         if (item.name == itemName) {
+             item.quantity += quantity;
+             itemMao[itemName] += quantity;
+             return;
+         }
+    }
+    items.emplace_back(itemName, quantity);
+    itemMap[itemName] = quantitiy;
+}
+void listItems() {
+  if (items.empty()) {
+      std::cout << "背包是空的。" << std::endl;
+      return;
+  }
+  std::cout << "背包中的物品：" << std::endl;
+  for (const auto& item : items) {
+      std::cout <<item.name << ": " << item.quantity << std::endl;
+      }
+  }
+
+void useItem(const std::string& itemName) {
+    if (itemMap.find(itemName) == itemMap.end()) {
+        std::cout << "背包中没有这个物品。" << std::endl;
+        return;
+    }
+    if (itemMap[itemName] <= 0) {
+        std::cout << "这个物品的数量不足。" << std::endl;
+        return;
+    }
+    itemMap[itemName]--;
+    std::cout << "使用了1个 " <<itemName <<std::endl;
+  }
+};
+
+int main() {
+    Inventory inventory;
+    std::string action;
+    std::string itemName;
+    int quantity;
+
+    while (true) {
+        std::cout << "请输入操作（添加/查看/使用/退出）：";
+        std::cin >>action;
+
+        if (action == "添加") {
+            std::cout << "输入物品名称：";
+            std::cin >> itemName;
+            std::cout << "输入物品数量：";
+            std::cin >>quantity;
+            inventory.addItem(itemName, quantity);
+        } else if (action == "查看") {
+            inventory.addItems();
+        } else if (action == "使用") {
+            std::cout << "输入要使用的物品名称：";
+            std::cin >> itemName;
+            inventory.useItem(itemName);
+        } else if (action == "退出") {
+            break;
+        } else {
+            std::cout << "无效的操作。" <<std::endl;
+        }    
+    }
+
+    return 0;   
+}
