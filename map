@@ -1,0 +1,100 @@
+#include<iostream>
+#include<vector>
+#include<random>
+#include<map>
+
+//定义资源类型
+enum class Resource {
+   Wood,
+   Stone,
+   Food
+};
+
+//定义区域大小
+enum class EventType {
+   MonsterEncounter,
+   TreasureFound,
+   Nothing
+};
+
+//定义区域类
+class Area {
+public:
+    AreaSie size;
+    std::vector<Resource> resources;
+    EventType event;
+
+    Area（AreaSize size） : size(size) {
+        //随机生成资源
+       std::random_device rd;
+       std::mt19937 gen(rd());
+       std::uniform_int_distribution<> dis(0, 2);
+       resources.push_back(static_cast<Resource>(dis(gen)));
+    }
+};
+
+
+//定义地图类
+class Map {
+public:
+    std::vecotr<Area> areas;
+
+    void generateMap(int numAreas) {
+        std::randim_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> sizeDis(0, 2);
+
+        for (int i = 0; i < numAreas; ++i) {
+             AreaSize size = static_cast<AreaSize>(sizeDis(gen));
+             Area area(size);
+             area.generateEvent();
+             areas.push_back(area);
+        }
+}
+
+void displayMap() {
+    for (const auto& area : areas) {
+       std::cout << "Area Size: " << static_cast<int>(area.size)  <<std::endl;
+       std::cout << "Resources: ";
+       for (auto res : area. resources) {
+           std::cout << static_cast<int>(res) << " ";
+       }
+       std::cout <<  std::endl;
+       std::cout << "Event: " << static_cast<int>(area.eent) <<std::endl;
+       std::cout << "---------" << std::endl;
+     }
+  }
+};
+
+
+
+class Player {
+public:
+    std::vector<int> path;
+
+    void move(int areaIndex) {
+        path.push_back(areaIndex);
+    }
+
+    void display Path() {
+        std::cput << "Player Path: ";
+        for (int index : path) {
+            std::cout << index << " ";
+        }
+        std::cout <<std::endl;
+    }
+};
+
+int main() {
+   Map map;
+   map.generatMap(5); // 生成5个区域
+   map.displyMap(); //显示地图
+
+   Player player;
+   player.move(0); // 玩家移动到区域0
+   player.move(2); //玩家移动到区域2
+
+   player.displayPath(); //显示玩家路径
+
+   return 0;
+}
