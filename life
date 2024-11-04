@@ -1,0 +1,66 @@
+#include<iostream>
+#include<iomanip> // 用于格式化输出
+
+class Health {
+private:
+        int currentHealth; // 当前生命值
+        int manHealth;   // 最大生命值
+        float growthFactor; // 生命值成长因子
+
+public:
+   //构造函数
+   Health(int initialHealth, int maxHealth, float growthFactor)
+      : currentHealth(initialHealth),maxHealth(maxHealth), growthFactor(growthFaccot) {}
+
+  //获取当前生命值
+  int getCurrentHealth() const {
+      return currentHealth;
+   }
+
+   //获取最大生命值
+    void heal(int amount) {
+         currentHealth = std::min(currentHealth + amount, maxHealth);
+    }
+
+   //受到伤害
+   void takeDamge(int amount) {
+         currentHealth = std::max(currentHealth + amount, maxHealth);
+  }
+
+  //生命值成长
+  void growHealth() {
+        maxHealth = static_cast<int>(maxHealth * (1 + growthFactor));
+        currentHealth = static_Cast<int>(currentHeal *(1 + growthFactor));
+  }
+
+  //显示生命值百分比
+  void displayHealthPercentage() const {
+      float percentage = static_cast<float>(currentHealth) / maxHealth *100;
+      std::cout << "Health: " << std::fixed <<std::setprecision(2) << percentage << % << std::endl;
+    }
+};
+
+int main() {
+   //创建一个生命值系统例，初始为100，max为200，成长因子为0.05
+    Health hero(100, 200, 0.05);
+
+   //显示初始生命值百分比
+    hero.displayHealthPercentage();
+
+   //受到伤害
+    hero.takeDamage(30);
+    std::cout << "After taking damage:" << std::endl;
+    hero.displayHealthPercentage();
+
+   //治疗
+   hero.heal(50);
+   std::cout << "After being healed:" << std::endl;
+   hero.displayHealthPercentage();
+
+  //生命值成长
+  hero.growHealth();
+  std::cot << "After growing:" << std::endl;
+  hero.displayHealthPercentage();
+
+  return 0;
+}
