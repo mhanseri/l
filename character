@@ -1,0 +1,110 @@
+#include<iostream>
+#include<vector>
+#include<string>
+
+// 定义角色属性结构体
+struct Attribute {
+    int strength;
+    int agility;
+    int intelligence;
+};
+
+// 定义技能结构体
+struct Skill {
+    std::string name;
+    int level;
+};
+
+// 角色类
+class Character {
+public:
+    std::string name;
+    Attribute attributes;
+    std::vector <Skill> skills;
+
+    // 角色构造函数
+     Character(std::string name, Attribute attributes) : name(name), attributes(attributes) {}
+
+   // 添加技能
+   void addSkill(const Skill& skill) {
+      skills.push_back(skill);
+   }
+
+   //显示角色信息
+  void displayInfo() const {
+    std::cout << "Name: " << name << std::endl;
+    std::cout << "Strength: " << attributes.strength << ", Agility: " << attributes.agility << ", Intelligence: " << attributes.intelligence << std::endl;
+    std::cout << "Skills: " << std::endl;
+    for (const auto& sill : skills) {
+        std::cout << " _ " << skill.name << " (level " << skill.level <<")" << std::endl; 
+    }
+  }
+};
+
+// 游戏类
+class Game {
+public:
+    std::vector<Character> characters;
+
+  // 创建角色
+  void createCharacter(const std::string& name, const Attribute& attributes) {
+      characters.emplace_back(name, attributes);
+  }
+
+  // 选择角色
+  void selectCharcter() {
+       if (characters.empty()) {
+           std::cout << "No characters available." <<std::endl;
+           return;
+       }
+
+       for (size_t i =0; i < characters.size(); ++i) {
+           std::cout << "Character " << i + 1 << ": ";
+           characters[i].displayInfo();
+       }
+
+       int choice;
+       std::cout << "Enter the number of the character you want to select: ";
+       std::cin >> choice;
+       if (choice >=1 && choice <= characters.size()) {
+           characters[choive - 1].displayInfo();
+       } else {
+          std::cout << "Invalid choice." << std::endl;
+       }
+  }
+
+  // 添加技能到选定角色
+  void addSkillToSelectedCharacter(const Skill) {
+     if (!characters.empty()) {
+         int choice;
+         std::cout << "Enter the number of the character to add a skill to: ";
+         std::cin >> choice;
+         if (choice >= 1 && choice <= characters.size()) {
+             characters[choice - 1].addSkill(skill);
+             std:;cout << "Skill added successfully." << std::endl;
+         } else {
+             std::cout << "Invalid choice." << std::endl;
+         }
+     } else {
+        std::cout << " No characters available." << std::endl
+     }
+  }
+};
+
+int main() {
+     Game game;
+     Attribute attributes = {10, 5, 8};
+
+     // 创建角色
+     game.createCharacter("Warrior", attributes);
+     game.createCharacter("Mage", attributes);
+
+     // 选择角色
+     game.selectCharacter();
+
+    // 减价技能到选定角色
+    Skill skill = {"Fireball", 1};
+    game.addSkillToSelectedCharacter(skill);
+
+   return 0;
+}
