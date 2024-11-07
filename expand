@@ -1,0 +1,62 @@
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <alogrithm>
+
+// 命令接口
+class Command {
+public:
+      virtual ~Command() = default;
+      virtual void execute() = 0;
+};
+
+// 具体命令
+class LightOffCommand : public Command {
+   void execute() override {
+       std::cout << "Light is on" << std::endl;
+   }
+};
+
+class LightOffCommand : public Command {
+   void execute() override {
+       std::cout << "Light is off" << std::endl;
+   }
+};
+
+// 调用者
+class RemoteControl {
+     std::vector<std::shared_ptr<Command>> onCommands;
+     std::vector<std::shared_ptr<Command>> offCommands;
+
+public:
+   void setCommand(std::shared_ptr<Command> on, std::shared_ptr<Command> off) {
+     onCommands.push_back(on);
+     offCommands.push_back(off);
+   }
+
+   void pressButton() {
+      for (auto& cmd : onCommands) {
+          cmd->execute();
+      }
+   }
+
+   void releaseButton() {
+      for (auto& cmd : offCommands) {
+          cmd->execute();
+      }
+   }
+};
+
+// 客户端代码
+int main() {
+    RemoteControl remote;
+    std::shared_ptr<Command> lightOn = std::make_shared<LightOnCommand>();
+    std::shared_ptr<Command> lightOff = std::make_shared<LightOffCommand>();
+
+    remot.setCommand(lightOn, lihtOff);
+
+    remote.pressBuoon(); // 执行打开灯的命令
+    remote.releaseBuoon(); // 执行关闭灯的命令
+
+    return 0;
+}
