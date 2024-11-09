@@ -1,0 +1,36 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <vector>
+
+class ImageProcessor {
+public:
+    // 构造函数
+    ImageProcessor() {}
+
+    // 析构函数
+    ~ImageProcessor() {}
+
+    // 加载图片
+    bool loadImage(const std::string& path, cv::Mat& image) {
+        image = cv::imread(path, cv::IMREAD_COLOR);
+        if(image.empty()) {
+            std::cerr << "Could not open or find the image!" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    // 显示图片
+    void displayImage(const cv::Mat& image, const std::string& windowName) {
+        cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+        cv::imshow(windowName, image);
+        cv::waitKey(0);
+    }
+
+    // 灰度化
+    void convertToGrayscale(const cv::Mat& src, cv::Mat& dst) {
+        cv::cvtColor(src, dst, cv::COLOR_BGR2GRAY);
+    }
+
+    // 二值化
+    void thresholdImage‌‍
