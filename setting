@@ -1,0 +1,70 @@
+// qt.pro库模版设置
+QT       += core gui widgets
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = SettingsApp
+TEMPLATE = app
+
+SOURCES += main.cpp\
+        SettingsWindow.cpp
+
+HEADERS += SettingsWindow.h
+
+// qt应用编译设置
+#include <QApplication>
+#include <QWidget>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QSlider>
+#include <QCheckBox>
+#include <QLineEdit>
+
+class SettingsWindow : public QWidget {
+public:
+    SettingsWindow(QWidget *parent = nullptr) : QWidget(parent) {
+        // 设置窗口标题
+        setWindowTitle("Settings");
+
+        // 创建布局
+        QVBoxLayout *layout = new QVBoxLayout(this);
+
+        // 创建标签
+        QLabel *label = new QLabel("Settings:");
+        layout->addWidget(label);
+
+        // 创建滑动条
+        QSlider *slider = new QSlider(Qt::Horizontal);
+        slider->setRange(0, 100);
+        layout->addWidget(slider);
+
+        // 创建复选框
+        QCheckBox *checkBox = new QCheckBox("Enable feature");
+        layout->addWidget(checkBox);
+
+        // 创建文本输入框
+        QLineEdit *lineEdit = new QLineEdit;
+        layout->addWidget(lineEdit);
+
+        // 创建保存按钮
+        QPushButton *saveButton = new QPushButton("Save");
+        connect(saveButton, &QPushButton::clicked, this, &SettingsWindow::saveSettings);
+        layout->addWidget(saveButton);
+    }
+
+private slots:
+    void saveSettings() {
+        // 这里可以添加保存设置的代码
+        qDebug() << "Settings saved!";
+    }
+};
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    SettingsWindow window;
+    window.show();
+
+    return app.exec();
+}
