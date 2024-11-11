@@ -1,0 +1,58 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+// 用于保存数据的函数
+void saveData(const std::string& filename, const std::vector<int>& data) {
+    std::ofstream file(filename, std::ios::out);
+    if (!file.is_open()) {
+        std::cerr << "无法打开文件进行写入" << std::endl;
+        return;
+    }
+    for (int num : data) {
+        file << num << std::endl;
+    }
+    file.close();
+}
+
+// 用于加载数据的函数
+std::vector<int> loadData(const std::string& filename) {
+    std::vector<int> data;
+    std::ifstream file(filename, std::ios::in);
+    if (!file.is_open()) {
+        std::cerr << "无法打开文件进行读取" << std::endl;
+        return data;
+    }
+    int num;
+    while (file >> num) {
+        data.push_back(num);
+    }
+    file.close();
+    return data;
+}
+
+int main() {
+    std::string filename = "savefile.txt";
+    std::vector<int> data;
+
+    // 让用户输入一些数据
+    std::cout << "请输入一些整数，输入非数字结束：" << std::endl;
+    int input;
+    while (std::cin >> input) {
+        data.push_back(input);
+    }
+
+    // 保存数据
+    saveData(filename, data);
+    std::cout << "数据已保存。" << std::endl;
+
+    // 加载数据
+    std::vector<int> loadedData = loadData(filename);
+    std::cout << "加载的数据：" << std::endl;
+    for (int num : loadedData) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
