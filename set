@@ -1,0 +1,61 @@
+#include <iostream>
+#include <string>
+
+// 定义状态枚举
+enum class HealthStatus {
+    Healthy,
+    Sick,
+    Terminal
+};
+
+// 状态系统类
+class HealthSystem {
+private:
+    HealthStatus status;
+
+public:
+    // 构造函数，默认状态为健康
+    HealthSystem() : status(HealthStatus::Healthy) {}
+
+    // 获取当前状态
+    HealthStatus getStatus() const {
+        return status;
+    }
+
+    // 设置状态
+    void setStatus(HealthStatus newStatus) {
+        status = newStatus;
+    }
+
+    // 打印当前状态
+    void printStatus() const {
+        switch (status) {
+            case HealthStatus::Healthy:
+                std::cout << "当前状态：健康" << std::endl;
+                break;
+            case HealthStatus::Sick:
+                std::cout << "当前状态：生病" << std::endl;
+                break;
+            case HealthStatus::Terminal:
+                std::cout << "当前状态：绝症" << std::endl;
+                break;
+        }
+    }
+};
+
+int main() {
+    HealthSystem person;
+
+    // 打印初始状态
+    person.printStatus();
+
+    // 改变状态为生病
+    person.setStatus(HealthStatus::Sick);
+    person.printStatus();
+
+    // 改变状态为绝症
+    person.setStatus(HealthStatus::Terminal);
+    person.printStatus();
+
+    return 0;
+}
