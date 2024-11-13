@@ -1,0 +1,96 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+// 角色类
+class Character {
+public:
+    std::string name;
+    int health;
+    int attackPower;
+
+    Character(std::string name, int health, int attackPower)
+        : name(name), health(health), attackPower(attackPower) {}
+
+    void takeDamage(int damage) {
+        health -= damage;
+        std::cout << name << " 受到 " << damage << " 点伤害，剩余生命值：" << health << std::endl;
+        if (health <= 0) {
+            std::cout << name << " 被击败了！" << std::endl;
+        }
+    }
+
+    void attack(Character& target) {
+        std::cout << name << " 攻击 " << target.name << "，造成 " << attackPower << " 点伤害。" << std::endl;
+        target.takeDamage(attackPower);
+    }
+};
+
+// 战斗系统类
+class BattleSystem {
+private:
+    std::vector<Character*> characters;
+    int currentTurn;
+
+public:
+    BattleSystem(const std::vector<Character*>& characters) : characters(characters), currentTurn(0) {}
+
+    void startBattle() {
+        bool isRunning = true;
+        while (isRunning) {
+            Character& activeCharacter = *characters[currentTurn];
+            std::cout << activeCharacter.name << " 的回合。" << std::endl;
+
+            std::string action;
+            std::cout << "选择行动（攻击/防御/逃跑/换人）: ";
+            std::cin >> action;
+
+            if (action == "攻击") {
+                std::string targetName;
+                std::cout << "选择目标: ";
+                std::cin >> targetName;
+
+                for (Character* character : characters) {
+                    if (character->name == targetName) {
+                        activeCharacter.attack(*character);
+                        break;
+                    }
+                }
+            } else if (action == "防御") {
+                std::cout << activeCharacter.name << " 防御。" << std::endl;
+            } else if (action == "逃跑") {
+                std::cout << activeCharacter.name << " 尝试逃跑..." << std::endl;
+                isRunning = false;
+            } else if (action == "换人") {
+                std::string newName;
+                std::cout << "输入新角色名字: ";
+                std::cin >> newName;
+
+                for (Character* character : characters) {
+                    if (character->name == newName) {
+                        activeCharacter = *character;
+                        std::cout << "换人成功，现在行动的是 " << activeCharacter.name << std::endl;
+                        break;
+                    }
+                }
+            } else {
+                std::cout << "无效的行动。" << std::endl;
+            }
+
+            currentTurn = (currentTurn + 1) % characters.size();
+        }
+    }
+};
+
+int main() {
+    // 创建角色
+    Character hero("英雄", 100, 15);
+    Character enemy("敌人", 80, 10);
+
+    // 创建战斗系统并开始战斗
+    std::vector<Character*> characters = {&hero, &enemy};
+    BattleSystem battleSystem(characters);
+    battleSystem.startBattle();
+
+    return 0;
+}
