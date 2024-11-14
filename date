@@ -1,0 +1,52 @@
+#include <iostream>
+#include <map>
+#include <chrono>
+#include <iomanip>
+
+// 定义一个结构体来存储日期和事件
+struct Event {
+    std::string event;
+    std::chrono::system_clock::time_point time;
+};
+
+// 定义一个类来管理日历
+class Calendar {
+private:
+    std::map<std::chrono::system_clock::time_point, Event> events;
+
+public:
+    // 添加事件到日历
+    void addEvent(const std::string& event) {
+        auto now = std::chrono::system_clock::now();
+        events[now] = {event, now};
+        std::cout << "Event added at " << std::asctime(std::localtime(&now.time_since_epoch().count()));
+    }
+
+    // 显示所有事件
+    void showEvents() {
+        for (const auto& eventPair : events) {
+            std::cout << "Time: " << std::asctime(std::localtime(&eventPair.first.time_since_epoch().count())) << " - Event: " << eventPair.second.event << std::endl;
+        }
+    }
+};
+
+int main() {
+    Calendar myCalendar;
+    std::string event;
+
+    while (true) {
+        std::cout << "Enter an event (or 'exit' to quit): ";
+        std::getline(std::cin, event);
+
+        if (event == "exit") {
+            break;
+        }
+
+        myCalendar.addEvent(event);
+    }
+
+    std::cout << "All events:" << std::endl;
+    myCalendar.showEvents();
+
+    return 0;
+}
