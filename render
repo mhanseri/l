@@ -1,0 +1,84 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <vector>
+
+class Animation {
+public:
+    Animation(sf::Texture& texture, int frameCount, int frameWidth, int frameHeight) {
+        this->texture = texture;
+        this->frameCount = frameCount;
+        this->frameWidth = frameWidth;
+        this->frameHeight = frameHeight;
+        this->currentFrame = 0;
+    }
+
+    void update(float deltaTime) {
+        if (animationTime >= 0) {
+            animationTime -= deltaTime;
+            if (animationTime <= 0) {
+                currentFrame = (currentFrame + 1) % frameCount;
+                animationTime = 1.0f / 10; // 10 frames per second
+            }
+        }
+    }
+
+    sf::Sprite getSprite() {
+        sf::IntRect rect(0, currentFrame * frameHeight, frameWidth, frameHeight);
+        sprite.setTextureRect(rect);
+        sprite.setTexture(texture);
+        return sprite;
+    }
+
+    void setAnimationTime(float time) {
+        animationTime = time;
+    }
+
+private:
+    sf::Texture texture;
+    int frameCount;
+    int frameWidth;
+    int frameHeight;
+    int currentFrame;
+    float animationTime = 1.0f / 10; // 10 frames per second
+    sf::Sprite sprite;
+};
+
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "2D Animation Renderer");
+
+    // Load texture
+    sf::Texture texture;
+    if (!texture.loadFromFile("path_to_your_sprite_sheet.png")) {
+        std::cerr << "Failed to load texture" << std::endl;
+        return -1;
+    }
+
+    // Create animation
+    Animation animation(texture, 10, 80, 80); // Assuming 10 frames, 80x80 each
+
+    sf::Clock clock;
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // Calculate delta time
+        float deltaTime = clock.restart().asSeconds();
+
+        // Update animation
+        animation.update(deltaTime);
+
+        // Clear screen
+        window.clear();
+
+        // Draw animation
+        window.draw(animation.getSprite());
+
+        // Display
+        window.display();
+    }
+
+    return 0;
+}
