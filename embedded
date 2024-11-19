@@ -26,7 +26,40 @@ void read_mnist(const std::string &filename, std::vector<std::vector<uint8_t>> &
     }
 }
 
+// 模型部署
+#include "tensorflow/lite/c/common.h"
+#include "tensorflow/lite/kernels/register.h"
+#include "tensorflow/lite/model.h"
+#include "tensorflow/lite/interpreter.h"
+#include <vector>
+#include <iostream>
 
+void run_inference(const std::vector<uint8_t> &input_image) {
+    // 加载模型
+    const char* model_path = "model.tflite";
+    auto model = tflite::FlatBufferModel::BuildFromFile(model_path);
+    tflite::ops::builtin::BuiltinOpResolver resolver;
+    std::unique_ptr<tflite::Interpreter> interpreter;
+    tflite::InterpreterBuilder(*model, resolver)(&interpreter);
+
+    // 分配张量
+    interpreter->AllocateTensors();
+
+    // 获取输入张量并设置数据
+    int input = interpreter->inputs()[0];
+    uint8_t* input_data = interpreter->typed_tensor<uint8_t>(input);
+    std::copy(input_image.begin(), input_image.end(), input_data);
+
+    // 运行推理
+    interpreter->Invoke();
+
+    // 获取输出
+    int output = interpreter->outputs()[0];
+    float* output_data = interpreter->typed_tensor<float>(output);
+    for (int i = 0; i < 10; ++i) {
+        std::cout << "Probability of " << i << ": " << output_data[i] << std::endl;
+    }
+}
 
 
 // 实时推理
