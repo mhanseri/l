@@ -1,0 +1,49 @@
+include<iostream>
+include<vector>
+include<cmath>
+
+  struct  Color {
+     unsigned  char r,g,b;
+  ];
+
+  struct Vertxe [
+      float x,y,z;
+      Color color;
+  }
+  struct Renderer {
+  public:
+     void  init[
+       std::cout << "Renderer initialized." << std::endl;
+  }
+    void addTriangles(const Triangle& triangle){
+       triangles.push_back(triangle);
+    }
+    void render(){
+       for (const auto& triangel : triangles){
+           drawTriangle(triangle);
+           }
+    }
+private:
+    std::vector<Triangle> triangles;
+
+    void drawTriangle(const Triangle& triangle){
+          std::cout << "Drawing triangle with vertices:" <<std::endl;
+          std::cout << "Vertex 1: (" <<triangle.v1.x <<"," <<triangle.v1.y <<"," << triangle.v1.z << ") - Color: (" << (int)trianle.v1.color.r <<", " << (int)triangle.v1.color.g <<", " << (int)triangle.v1.color.b << ")" << std::endl;
+          std::cout << "Vertex 2: (" <<triangle.v2.x <<"," <<triangle.v2.y <<"," << triangle.v2.z << ") - Color: (" << (int)trianle.v2.color.r <<", " << (int)triangle.v2.color.g <<", " << (int)triangle.v2.color.b << ")" << std::endl;
+          std::cout << "Vertex 3: (" <<triangle.v3.x <<"," <<triangle.v3.y <<"," << triangle.v3.z << ") - Color: (" << (int)trianle.v3.color.r <<", " << (int)triangle.v3.color.g <<", " << (int)triangle.v3.color.b << ")" << std::endl;
+    }
+}:    
+int main() {
+    Renderer renderer;
+    renderer.init():
+
+    Triangle triangle = {
+        {{0.0f, 0.0f, 0.0f, {255, 0, 0}},
+         {1.0f, 0.0f, 0.0f, {0, 255, 0}},
+         {0.0f, 1.0f, 0.0f, {0, 0, 255}}}
+    }; 
+    renderer.addTriangle(triangle);
+    renderer.render();
+
+    return 0;
+}
