@@ -1,0 +1,120 @@
+// 数据
+#include <fstream>
+#include <vector>
+#include <iostream>
+
+void read_mnist(const std::string &filename, std::vector<std::vector<uint8_t>> &images) {
+    std::ifstream file(filename, std::ios::binary);
+    if (file.is_open()) {
+        int magic_number = 0;
+        int number_of_images = 0;
+        int rows = 0;
+        int cols = 0;
+        file.read((char*)&magic_number, sizeof(magic_number));
+        magic_number = __builtin_bswap32(magic_number);
+        file.read((char*)&number_of_images, sizeof(number_of_images));
+        number_of_images = __builtin_bswap32(number_of_images);
+        file.read((char*)&rows, sizeof(rows));
+        rows = __builtin_bswap32(rows);
+        file.read((char*)&cols, sizeof(cols));
+        cols = __builtin_bswap32(cols);
+        for (int i = 0; i < number_of_images; ++i) {
+            std::vector<uint8_t> image(rows * cols);
+            file.read((char*)image.data(), rows * cols);
+            images.push_back(image);
+        }
+    }
+}
+
+
+
+
+// 实时推理
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <vector>
+#include "tensorflow/lite/interpreter.h"
+#include "tensorflow/lite/kernels/register.h"
+#include "tensorflow/lite/model.h"
+
+void preprocess_image(const cv::Mat &image, std::vector<uint8_t> &output_image) {
+    cv::Mat resized_image;
+    cv::resize(image, resized_image, cv::Size(28, 28));
+    cv::cvtColor(resized_image, resized_image, cv::COLOR_BGR2GRAY);
+    output_image.assign(resized_image.data, resized_image.data + resized_image.total());
+}
+
+void classify_image(const std::vector<uint8_t> &image_data) {
+    const char* model_path = "model.tflite";
+    auto model = tflite::FlatBufferModel::BuildFromFile(model_path);
+    tflite::ops::builtin::BuiltinOpResolver resolver;
+    std::unique_ptr<tflite::Interpreter> interpreter;
+    tflite::InterpreterBuilder(*model, resolver)(&interpreter);
+    interpreter->AllocateTensors();
+    int input_index = interpreter->inputs()[0];
+    uint8_t* input_data = interpreter->typed_tensor<uint8_t>(input_index);
+    std::copy(image_data.begin(), image_data.end(), input_data);
+    interpreter->Invoke();
+    int output_index = interpreter->outputs()[0];
+    float* output_data = interpreter->typed_tensor<float>(output_index);
+    for (int i = 0; i < 10; ++i) {
+        std::cout << "Class " << i << ": " << output_data[i] << std::endl;
+    }
+}
+
+int main() {
+    cv::VideoCapture cap(0);
+    if (!cap.isOpened()) {
+        std::cerr << "Error opening video stream" << std::endl;
+        return -1;
+    }
+    while (true) {
+        cv::Mat frame;
+        cap >> frame;
+        if (frame.empty()) {
+            break;
+        }
+        std::vector<uint8_t> image_data;
+        preprocess_image(frame, image_data);
+        classify_image(image_data);
+        cv::imshow("Frame", frame);
+        if (cv::waitKey(10) == 27) {
+            break;
+        }
+    }
+    cap.release();
+    cv::destroyAllWindows();
+    return 0;
+}
+
+
+// python
+import tensorflow as tf
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, Flatten
+
+# 加载数据集
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# 构建模型
+model = Sequential([
+    Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1)),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(10, activation='softmax')
+])
+
+# 编译和训练模型
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5)
+
+# 模型量化
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+tflite_model = converter.convert()
+
+# 保存模型
+with open('model.tflite', 'wb') as f:
+    f.write(tflite_model)
